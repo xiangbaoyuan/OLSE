@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import scipy.stats as sta
 import matplotlib.pyplot as plt
 
@@ -97,6 +98,19 @@ def FTest(y, error_hat, N, K):
     return P
 
 
+def ErrorRatio(y, y_hat):
+    '''
+        输入：
+        y     真实值
+        y_hat 估计值
+        输出：
+        ErrorRatio 误差百分比
+    '''
+    temp = abs(y - y_hat) / y * 100
+
+    return temp.sum() / len(y)
+
+
 def RegressionDiagnosis(X, y_hat, error_hat):
     '''
         回归诊断
@@ -105,6 +119,10 @@ def RegressionDiagnosis(X, y_hat, error_hat):
         error_hat   残差
         返回值：
     '''
+
+    # 绘制qq图
+    sta.probplot(np.array(error_hat).reshape(1,len(error_hat))[0], dist="norm", plot=plt)
+    plt.show()
 
     mu = error_hat.mean()
     sigma = error_hat.std()
@@ -192,33 +210,39 @@ def TheResultsShow(X, y):
     Beta_var_hat, Pt = TTest(X, Beta_hat, error_hat, Beta_test)
     Pf = FTest(y, error_hat, N, K)
     MSE = error_hat.T * error_hat / freedom
+    error_ratio = ErrorRatio(y, y_hat)
 
     # 打印
     print('+{x:-^{y}}+'.format(x='', y=6 + len('Number of obs')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Prob > F')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('R-squared')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Adj R-squared')) +
-          '{x:-^{y}}+'.format(x='', y=6 + len('MSE')))
+          '{x:-^{y}}+'.format(x='', y=8 + len('MSE')) +
+          '{x:-^{y}}+'.format(x='', y=6 + len('ErrorRatio')))
     print('|{x:^{y}}|'.format(x='Number of obs', y=6 + len('Number of obs')) +
           '{x:^{y}}|'.format(x='Prob > F', y=6 + len('Prob > F')) +
           '{x:^{y}}|'.format(x='R-squared', y=6 + len('R-squared')) +
           '{x:^{y}}|'.format(x='Adj R-squared', y=6 + len('Adj R-squared')) +
-          '{x:^{y}}|'.format(x='MSE', y=6 + len('MSE')))
+          '{x:^{y}}|'.format(x='MSE', y=8 + len('MSE')) +
+          '{x:^{y}}|'.format(x='ErrorRatio', y=6 + len('ErrorRatio')))
     print('+{x:-^{y}}+'.format(x='', y=6 + len('Number of obs')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Prob > F')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('R-squared')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Adj R-squared')) +
-          '{x:-^{y}}+'.format(x='', y=6 + len('MSE')))
-    print('|{x:^{y}}|'.format(x='%d' % N , y=6 + len('Number of obs')) +
+          '{x:-^{y}}+'.format(x='', y=8 + len('MSE')) +
+          '{x:-^{y}}+'.format(x='', y=6 + len('ErrorRatio')))
+    print('|{x:^{y}}|'.format(x='%d' % N, y=6 + len('Number of obs')) +
           '{x:^{y}}|'.format(x='%.3f' % Pf, y=6 + len('Prob > F')) +
           '{x:^{y}}|'.format(x='%.3f' % R_square, y=6 + len('R-squared')) +
           '{x:^{y}}|'.format(x='%.3f' % Adjusted_R_square, y=6 + len('Adj R-squared')) +
-          '{x:^{y}}|'.format(x='%.3f' % MSE, y=6 + len('MSE')))
+          '{x:^{y}}|'.format(x='%.3f' % MSE, y=8 + len('MSE')) +
+          '{x:^{y}}|'.format(x='%.3f' % error_ratio, y=6 + len('ErrorRatio')))
     print('+{x:-^{y}}+'.format(x='', y=6 + len('Number of obs')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Prob > F')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('R-squared')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Adj R-squared')) +
-          '{x:-^{y}}+'.format(x='', y=6 + len('MSE')))
+          '{x:-^{y}}+'.format(x='', y=8 + len('MSE')) +
+          '{x:-^{y}}+'.format(x='', y=6 + len('ErrorRatio')))
 
     print('+{x:-^{y}}+'.format(x='', y=6 + len('Beta_hat')) +
           '{x:-^{y}}+'.format(x='', y=6 + len('Beta_hat')) +
